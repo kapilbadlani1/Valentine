@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Choose Our Date 💕</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#ffdde1,#ee9ca7);
+}
+
+h1{
+  text-align:center;
+  padding:40px 20px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:25px;
+  padding:30px;
+}
+
+.card{
+  background:#fff;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 15px 40px rgba(0,0,0,0.2);
+  cursor:pointer;
+  transition:transform .3s;
+}
+
+.card:hover{
+  transform:scale(1.05);
+}
+
+.card img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+}
+
+.card h3{
+  text-align:center;
+  padding:15px;
+}
+
+.bar{
+  position:fixed;
+  bottom:-100px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#000;
+  color:#fff;
+  padding:20px 40px;
+  border-radius:40px;
+  font-size:1.2rem;
+  transition:bottom .5s;
+}
+.bar.show{
+  bottom:40px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>How should we celebrate our date? 💘</h1>
+
+<div class="grid">
+  <div class="card" onclick="showBar()">
+    <img src="https://images.unsplash.com/photo-1524985069026-dd778a71c7b4">
+    <h3>Netflix & Chill 🎬</h3>
+  </div>
+
+  <div class="card" onclick="showBar()">
+    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee">
+    <h3>City Explore 🌆</h3>
+  </div>
+
+  <div class="card" onclick="showBar()">
+    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836">
+    <h3>Clubbing 💃</h3>
+  </div>
+
+  <div class="card" onclick="showBar()">
+    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4">
+    <h3>Pub 🍻</h3>
+  </div>
+
+  <div class="card" onclick="showBar()">
+    <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1">
+    <h3>Café Date ☕</h3>
+  </div>
+</div>
+
+<div class="bar" id="bar">
+  💖 DM me my love <strong>Divyaa</strong> 💖
+</div>
+
+<script>
+function showBar(){
+  document.getElementById("bar").classList.add("show");
+}
+</script>
+
+</body>
+</html>
