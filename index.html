@@ -3,77 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine's Day Interactive Website</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+    <title>Valentine's Day</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        .hero {
+            background: linear-gradient(to bottom right, #8B0000, #000);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            color: white;
+            text-align: center;
+        }
+        .heart {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: red;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            animation: float 4s infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+        .quote {
+            font-size: 1.5em;
+            margin: 20px;
+            opacity: 0;
+            transition: opacity 2s;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: #FF1493;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .btn:hover {
+            transform: scale(1.1);
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.0/gsap.min.js"></script>
 </head>
 <body>
-    <header class="header">
-        <h1>Happy Valentine's Day!</h1>
-        <div class="heart-particles"></div>
-    </header>
-    <section id="timeline" class="timeline">
-        <h2>A Love Story Timeline</h2>
-        <div class="timeline-item">
-            <h3>First Meeting</h3>
-            <p>It all started when...</p>
-        </div>
-        <div class="timeline-item">
-            <h3>First Date</h3>
-            <p>Our magical night...</p>
-        </div>
-        <!-- More timeline items -->
-    </section>
-    <section id="memory-cards" class="memory-cards">
-        <h2>Memory Game</h2>
-        <div class="card-container">
-            <!-- Flip memory cards here -->
-        </div>
-    </section>
-    <section id="letter-generator" class="letter-generator">
-        <h2>Create Your Love Letter</h2>
-        <textarea placeholder="Write your love letter here..."></textarea>
-        <button>Generate Letter</button>
-    </section>
-    <section class="reveal">
-        <h2 style="display:none;">Surprise Reveal!</h2>
-        <div class="confetti" style="display:none;"></div>
-    </section>
-    <footer>
-        <p>&copy; 2026 Love Stories</p>
-    </footer>
+    <div class="hero">
+        <div class="heart" style="top: 10%; left: 20%; animation-delay: 0s;"></div>
+        <div class="heart" style="top: 70%; left: 50%; animation-delay: 1s;"></div>
+        <div class="heart" style="top: 30%; left: 80%; animation-delay: 2s;"></div>
+        <h1 class="quote" id="quote">"Love is not about how many days, months, or years you have been together. Love is about how much you love each other every single day."</h1>
+        <button class="btn" onclick="alert('Happy Valentine’s Day!')">Celebrate Love</button>
+    </div>
+    <script>
+        gsap.to(".quote", { duration: 2, opacity: 1 });
+    </script>
 </body>
 </html>
-
-<style>
-body {
-    font-family: 'Arial', sans-serif;
-    background: #f9e3e3;
-}
-.header {
-    text-align: center;
-    background: #ff6f61;
-    color: white;
-    padding: 2rem;
-}
-.heart-particles {
-    animation: float 3s infinite;
-    /* Add heart particle animation */
-}
-@keyframes float {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0); }
-}
-/* Add more styles for sections and animations */
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Add JS for generating love letters
-    document.querySelector('button').addEventListener('click', function() {
-        // Generate love letter logic
-    });
-    // Add confetti reveal animation logic
-});
-</script>
