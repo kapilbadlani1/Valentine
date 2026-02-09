@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Memories — Nostalgia</title>
+  <meta name="description" content="A warm sepia Polaroid gallery with lightbox, tilt/zoom interactions, parallax scrolling and favorites stored in localStorage." />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+
+  <style>
+    :root{
+      --sepia-1:#3b2a21; --sepia-2:#a37b59; --paper:#f7efe8; --shadow:rgba(27,18,12,0.12);
+      --card-w:260px; --gap:20px; --radius:8px; --ease:cubic-bezier(.2,.9,.2,1);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,#f6efe6,#efe6dc);color:var(--sepia-1)}
+    a{color:inherit}
+
+    header{padding:36px 20px;text-align:center}
+    header h1{margin:0;font-size:clamp(1.4rem,3.8vw,2rem);letter-spacing:.4px}
+    header p{margin-top:8px;color:#7a5a48}
+
+    main{max-width:1200px;margin:28px auto;padding:0 18px}
+
+    /* Polaroid grid */
+    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--card-w),1fr));gap:var(--gap);align-items:start}
+
+    .polaroid{
+      background:var(--paper);border-radius:10px;padding:12px 12px 18px;box-shadow:0 8px 22px var(--shadow);display:block;position:relative;overflow:visible;transform-origin:center center;transition:transform .32s var(--ease),box-shadow .32s var(--ease);will-change:transform
+    }
+
+    .photo-wrap{background:#fff;border-radius:6px;overflow:hidden;display:block;cursor:pointer;}
+    .photo{display:block;width:100%;height:220px;object-fit:cover;transition:transform .45s var(--ease)}
+
+    .polaroid .meta{margin-top:10px;font-size:.95rem;color:#60453b;display:flex;justify-content:space-between;align-items:center}
+    .polaroid .meta .date{font-size:.85rem;color:#8b6b61}
+    .polaroid .meta .fav{cursor:pointer;background:transparent;border:none;color:#b86a4b;font-size:1.15rem}
+
+    /* Hover caption overlay */
+    .caption{position:absolute;left:12px;right:12px;bottom:18px;padding:10px;border-radius:6px;background:linear-gradient(180deg,rgba(10,10,10,0.06),rgba(10,10,10,0.12));color:#331f1a;font-size:.95rem;opacity:0;transform:translateY(8px);transition:opacity .28s var(--ease),transform .28s var(--ease)}
+    .polaroid:hover .caption{opacity:1;transform:translateY(0)}
+
+    /* tilt container - we'll apply transform via JS */
+    .tilt{perspective:1200px}
+
+    /* Lightbox modal */
+    .lightbox{position:fixed;inset:0;background:rgba(11,8,6,0.6);display:none;align-items:center;justify-content:center;z-index:1500}
+    .lightbox.open{display:flex}
+    .lb-card{background:var(--paper);padding:18px;border-radius:10px;max-width:92vw;max-height:92vh;box-shadow:0 18px 60px rgba(10,6,4,0.6);display:flex;flex-direction:column;gap:12px}
+    .lb-img{max-width:80vw;max-height:60vh;object-fit:cover;border-radius:6px}
+    .lb-meta{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .lb-close{background:transparent;border:0;font-size:1.2rem;cursor:pointer}
+
+    /* Parallax offset helper */
+    .parallax-y{transform:translateY(0);transition:transform .2s linear}
+
+    /* Favorites visual */
+    .fav.active{color:#b33e1a}
+
+    /* responsive tweaks */
+    @media(max-width:720px){.photo{height:180px}.lb-img{max-width:92vw;max-height:48vh}}
+
+    /* minimal accessibility focus */
+    .polaroid:focus-within{outline:3px solid rgba(180,120,100,.12);outline-offset:6px}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Memories — Warmth & Nostalgia</h1>
+    <p>Polaroid moments of shared days. Click a photo to open the memory.</p>
+  </header>
+
+  <main>
+    <section class="gallery" id="gallery" aria-label="Memories gallery">
+      <!-- Items: using data attributes for caption/date/id -->
+      <article class="tilt polaroid" tabindex="0" data-id="m1" data-date="2021-06-12" data-caption="A rainy walk and hot coffee">
+        <div class="photo-wrap" role="button" tabindex="0">
+          <img class="photo" src="https://picsum.photos/id/1018/600/400" alt="Rainy walk" />
+        </div>
+        <div class="meta"><span class="date">June 12, 2021</span><button class="fav" aria-label="Mark favorite">☆</button></div>
+        <div class="caption">A rainy walk and hot coffee</div>
+      </article>
+
+      <article class="tilt polaroid" tabindex="0" data-id="m2" data-date="2020-11-02" data-caption="First lazy Sunday breakfast">
+        <div class="photo-wrap" role="button" tabindex="0">
+          <img class="photo" src="https://picsum.photos/id/1025/600/400" alt="Breakfast" />
+        </div>
+        <div class="meta"><span class="date">Nov 02, 2020</span><button class="fav" aria-label="Mark favorite">☆</button></div>
+        <div class="caption">First lazy Sunday breakfast</div>
+      </article>
+
+      <article class="tilt polaroid" tabindex="0" data-id="m3" data-date="2019-09-17" data-caption="Stargazing on the hill">
+        <div class="photo-wrap" role="button" tabindex="0">
+          <img class="photo" src="https://picsum.photos/id/1003/600/400" alt="Stargazing" />
+        </div>
+        <div class="meta"><span class="date">Sep 17, 2019</span><button class="fav" aria-label="Mark favorite">☆</button></div>
+        <div class="caption">Stargazing on the hill</div>
+      </article>
+
+      <article class="tilt polaroid" tabindex="0" data-id="m4" data-date="2018-05-21" data-caption="A quiet sunset beach">
+        <div class="photo-wrap" role="button" tabindex="0">
+          <img class="photo" src="https://picsum.photos/id/1043/600/400" alt="Sunset beach" />
+        </div>
+        <div class="meta"><span class="date">May 21, 2018</span><button class="fav" aria-label="Mark favorite">☆</button></div>
+        <div class="caption">A quiet sunset beach</div>
+      </article>
+
+      <article class="tilt polaroid" tabindex="0" data-id="m5" data-date="2022-02-14" data-caption="Small notes and big smiles">
+        <div class="photo-wrap" role="button" tabindex="0">
+          <img class="photo" src="https://picsum.photos/id/1069/600/400" alt="Notes and smiles" />
+        </div>
+        <div class="meta"><span class="date">Feb 14, 2022</span><button class="fav" aria-label="Mark favorite">☆</button></div>
+        <div class="caption">Small notes and big smiles</div>
+      </article>
+
+      <article class="tilt polaroid" tabindex="0" data-id="m6" data-date="2017-12-31" data-caption="New Year's Eve lights">
+        <div class="photo-wrap" role="button" tabindex="0">
+          <img class="photo" src="https://picsum.photos/id/1056/600/400" alt="New Year lights" />
+        </div>
+        <div class="meta"><span class="date">Dec 31, 2017</span><button class="fav" aria-label="Mark favorite">☆</button></div>
+        <div class="caption">New Year's Eve lights</div>
+      </article>
+
+    </section>
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lb-card" role="dialog" aria-modal="true" aria-label="Memory">
+      <img class="lb-img" id="lbImg" src="" alt="" />
+      <div class="lb-meta"><div id="lbCaption" style="color:#5b3e33"></div><div style="display:flex;gap:8px;align-items:center"><button class="lb-fav" id="lbFav" aria-label="Toggle favorite">☆</button><button class="lb-close" id="lbClose" aria-label="Close">✕</button></div></div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const gallery = document.getElementById('gallery');
+      const items = Array.from(gallery.querySelectorAll('.polaroid'));
+      const lightbox = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lbImg');
+      const lbCaption = document.getElementById('lbCaption');
+      const lbClose = document.getElementById('lbClose');
+      const lbFav = document.getElementById('lbFav');
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Load favorites from localStorage
+      const FAVORITES_KEY = 'memories_favs_v1';
+      let favorites = {};
+      try{ favorites = JSON.parse(localStorage.getItem(FAVORITES_KEY)) || {}; }catch(e){ favorites = {}; }
+
+      function saveFavorites(){ localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites)); }
+
+      // Initialize fav buttons state
+      items.forEach(el => {
+        const id = el.dataset.id;
+        const favBtn = el.querySelector('.fav');
+        if (favorites[id]) favBtn.classList.add('active'), favBtn.textContent = '★'; else favBtn.textContent = '☆';
+        favBtn.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          favorites[id] = !favorites[id];
+          if (favorites[id]) { favBtn.classList.add('active'); favBtn.textContent='★'; } else { favBtn.classList.remove('active'); favBtn.textContent='☆'; }
+          saveFavorites();
+        });
+      });
+
+      // Tilt & zoom interaction
+      items.forEach(card => {
+        const wrap = card.querySelector('.photo-wrap');
+        const img = card.querySelector('.photo');
+        let rect = null;
+        function onMove(e){
+          rect = card.getBoundingClientRect();
+          const px = ( (e.clientX - rect.left) / rect.width ) - 0.5; // -0.5..0.5
+          const py = ( (e.clientY - rect.top) / rect.height ) - 0.5;
+          const rx = -py * 8; // rotateX
+          const ry = px * 10; // rotateY
+          card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(6px)`;
+          img.style.transform = 'scale(1.06)';
+        }
+        function onLeave(){ card.style.transform = ''; img.style.transform = ''; }
+
+        wrap.addEventListener('pointermove', onMove);
+        wrap.addEventListener('pointerleave', onLeave);
+        wrap.addEventListener('click', (e)=> openLightbox(card));
+        // keyboard open
+        card.addEventListener('keydown', (ev)=>{ if (ev.key==='Enter' || ev.key===' ') { ev.preventDefault(); openLightbox(card); } });
+      });
+
+      // Lightbox open
+      function openLightbox(card){
+        const img = card.querySelector('.photo');
+        const src = img.src; const alt = img.alt;
+        const caption = card.dataset.caption || '';
+        const id = card.dataset.id;
+        lbImg.src = src; lbImg.alt = alt; lbCaption.textContent = `${caption} — ${card.dataset.date}`;
+        lbFav.textContent = favorites[id] ? '★' : '☆'; lbFav.dataset.id = id;
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
+        // GSAP intro animation if available
+        if (!prefersReduced && typeof gsap !== 'undefined'){
+          gsap.fromTo('.lb-card',{scale:0.96,opacity:0,y:20},{scale:1,opacity:1,y:0,duration:0.6,ease:'back.out(1.2)'});
+        }
+      }
+
+      // Close
+      function closeLightbox(){ lightbox.classList.remove('open'); lightbox.setAttribute('aria-hidden','true'); document.body.style.overflow = ''; lbImg.src=''; }
+      lbClose.addEventListener('click', closeLightbox);
+      lightbox.addEventListener('click', (e)=>{ if (e.target===lightbox) closeLightbox(); });
+
+      // Toggle favorite from lightbox
+      lbFav.addEventListener('click', ()=>{
+        const id = lbFav.dataset.id; favorites[id] = !favorites[id]; saveFavorites(); lbFav.textContent = favorites[id] ? '★' : '☆';
+        // also update gallery button visual
+        const galleryBtn = gallery.querySelector(`[data-id="${id}"] .fav`);
+        if (galleryBtn){ galleryBtn.textContent = favorites[id] ? '★' : '☆'; galleryBtn.classList.toggle('active', !!favorites[id]); }
+      });
+
+      // Parallax on scroll (small vertical offset) and GSAP stagger reveal
+      const revealables = items;
+      const observer = new IntersectionObserver((entries)=>{
+        entries.forEach((ent)=>{
+          if (ent.isIntersecting){
+            const group = Array.from(revealables).slice(0); // all items
+            if (typeof gsap !== 'undefined' && !prefersReduced){
+              gsap.fromTo(ent.target,{opacity:0,y:18,filter:'blur(6px)'},{opacity:1,y:0,filter:'blur(0px)',duration:0.9,ease:'power2.out',stagger:0.06});
+            } else {
+              ent.target.style.opacity=1; ent.target.style.transform='none';
+            }
+            // once revealed, unobserve
+            observer.unobserve(ent.target);
+          }
+        });
+      },{threshold:0.12});
+      items.forEach(i=>observer.observe(i));
+
+      // Parallax movement based on scroll
+      function onScroll(){
+        const scrollY = window.scrollY; const vh = window.innerHeight;
+        items.forEach((el, idx)=>{
+          const r = el.getBoundingClientRect();
+          const mid = r.top + r.height/2;
+          const offset = (mid - vh/2) * 0.06; // small factor
+          el.style.transform = `translateY(${offset}px)`; // combined with tilt transforms, but acceptable
+        });
+      }
+      window.addEventListener('scroll', ()=>{ requestAnimationFrame(onScroll); }, {passive:true});
+      onScroll();
+
+      // Keyboard: close on Esc
+      document.addEventListener('keydown', (e)=>{ if (e.key==='Escape') closeLightbox(); });
+    })();
+  </script>
+</body>
+</html>
