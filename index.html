@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Valentine?</title>
+    <title>Valentine's Day Celebration</title>
     <style>
         body {
             display: flex;
@@ -11,58 +11,87 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #ffebee; /* Light Valentine Pink */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-            overflow: hidden;
+            background-color: #f8e0e5;
+            font-family: Arial, sans-serif;
         }
-        .container {
-            padding: 20px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        h1 {
+            color: #e84c3d;
+            font-size: 3em;
+            margin-bottom: 20px;
         }
-        h1 { color: #e91e63; }
-        .heart {
-            font-size: 100px;
-            color: #ff5252;
-            animation: beat .25s infinite alternate;
-        }
-        @keyframes beat {
-            to { transform: scale(1.1); }
-        }
-        .buttons { margin-top: 20px; }
         button {
-            padding: 10px 25px;
-            font-size: 18px;
+            background-color: #e84c3d;
+            color: white;
             border: none;
-            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1.5em;
             cursor: pointer;
-            transition: transform 0.2s;
+            border-radius: 5px;
+            margin: 10px;
+            transition: background-color 0.3s;
         }
-        #yesBtn { background-color: #4caf50; color: white; }
-        #noBtn { background-color: #f44336; color: white; margin-left: 10px; }
+        button:hover {
+            background-color: #c84338;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="heart">❤️</div>
-        <h1>Will you be my Valentine?</h1>
-        <div class="buttons">
-            <button id="yesBtn" onclick="alert('YES! ❤️ See you on Feb 14th!')">YES!</button>
-            <button id="noBtn" onmouseover="moveButton()">No</button>
-        </div>
-    </div>
-
+    <h1>Happy Valentine's Day!</h1>
+    <button id="romanticMessageBtn">Get Romantic Message</button>
+    <button id="playSoundBtn">Play Sound</button>
+    <div id="messageContainer"></div>
     <script>
-        function moveButton() {
-            const btn = document.getElementById('noBtn');
-            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-            btn.style.position = 'absolute';
-            btn.style.left = x + 'px';
-            btn.style.top = y + 'px';
+        const messages = [
+            "Love is in the air, be my valentine!",
+            "You're my favorite person in the universe!",
+            "Together forever, never apart, maybe in distance but never in heart."
+        ];
+
+        const romanticMessageBtn = document.getElementById('romanticMessageBtn');
+        const messageContainer = document.getElementById('messageContainer');
+        const playSoundBtn = document.getElementById('playSoundBtn');
+
+        romanticMessageBtn.addEventListener('click', () => {
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            messageContainer.textContent = randomMessage;
+        });
+
+        playSoundBtn.addEventListener('click', () => {
+            const sound = new Audio('path_to_your_sound_file.mp3'); // Replace with your sound file path
+            sound.play();
+        });
+
+        // Confetti Animation
+        function createConfetti() {
+            const colors = ['#ff0a0a', '#ffbb0a', '#24ff0a', '#0affd5', '#0a9eff', '#B90AFF'];
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.position = 'absolute';
+            confetti.style.width = '10px';
+            confetti.style.height = '10px';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.opacity = '0.8';
+            confetti.style.pointerEvents = 'none';
+            document.body.appendChild(confetti);
+
+            confetti.animate([{
+                transform: 'translateY(0)',
+                opacity: 1
+            }, {
+                transform: 'translateY(100vh)',
+                opacity: 0
+            }], {
+                duration: Math.random() * 2000 + 1000,
+                easing: 'ease-in',
+                fill: 'forwards'
+            });
+
+            setTimeout(() => {
+                confetti.remove();
+            }, 3000);
         }
+
+        setInterval(createConfetti, 150);
     </script>
 </body>
 </html>
