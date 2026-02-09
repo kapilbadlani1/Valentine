@@ -2,35 +2,46 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Choose Our Date</title>
+<title>Choose Our Date 💘</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
   margin:0;
   font-family:'Poppins',sans-serif;
-  background:linear-gradient(135deg,#ffdde1,#ee9ca7);
+  background:
+    radial-gradient(circle at top,#ffd1dc,#ff7a8a 60%, #b4002d);
+  min-height:100vh;
+  color:#2b0f1c;
 }
 
-h1{text-align:center;padding:40px 20px}
+h1{
+  text-align:center;
+  padding:50px 20px 20px;
+  color:#fff;
+  text-shadow:0 4px 15px rgba(0,0,0,.4);
+}
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:25px;
-  padding:30px;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:30px;
+  padding:40px;
 }
 
 .card{
-  background:#fff;
-  border-radius:20px;
+  background:rgba(255,255,255,.25);
+  backdrop-filter:blur(16px);
+  border-radius:25px;
   overflow:hidden;
-  box-shadow:0 20px 50px rgba(0,0,0,.25);
   cursor:pointer;
-  transition:transform .3s;
+  box-shadow:0 30px 70px rgba(0,0,0,.35);
+  transition:transform .4s, box-shadow .4s;
 }
-
-.card:hover{transform:scale(1.07)}
+.card:hover{
+  transform:translateY(-12px) scale(1.05);
+  box-shadow:0 40px 90px rgba(0,0,0,.45);
+}
 
 .card img{
   width:100%;
@@ -38,41 +49,44 @@ h1{text-align:center;padding:40px 20px}
   object-fit:cover;
 }
 
-.card h3{text-align:center;padding:15px}
+.card h3{
+  text-align:center;
+  padding:18px;
+  color:#fff;
+}
 
+/* Bottom bar */
 .bar{
   position:fixed;
   bottom:-120px;
   left:50%;
   transform:translateX(-50%);
-  background:#000;
+  background:rgba(0,0,0,.85);
   color:#fff;
-  padding:20px 30px;
-  border-radius:40px;
+  padding:22px 36px;
+  border-radius:60px;
   display:flex;
   gap:20px;
   align-items:center;
-  transition:bottom .6s;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+  transition:bottom .6s cubic-bezier(.2,.9,.2,1);
 }
-
 .bar.show{bottom:30px}
 
 .bar a{
-  color:#fff;
-  background:#25D366;
-  padding:10px 18px;
-  border-radius:30px;
   text-decoration:none;
+  color:#fff;
+  background:#e1306c;
+  padding:10px 20px;
+  border-radius:40px;
   font-size:.95rem;
 }
-
-.bar a.insta{background:#E1306C}
 </style>
 </head>
 
 <body>
 
-<h1>How should we celebrate our date? 💘</h1>
+<h1>How should we celebrate our date? 💖</h1>
 
 <div class="grid">
   <div class="card" onclick="showBar()">
@@ -98,16 +112,8 @@ h1{text-align:center;padding:40px 20px}
 </div>
 
 <div class="bar" id="bar">
-  💖 DM me my love <strong>Divyaa</strong>
-  <a href="https://wa.me/9602970654" target="_blank">WhatsApp</a>
-  <div class="bar" id="bar">
   💖 DM me on Instagram <strong>@kapil_badlani</strong>
-  <a href="https://instagram.com/kapil_badlani" 
-     target="_blank" 
-     class="insta">
-     Instagram 💌
-  </a>
-</div>
+  <a href="https://instagram.com/kapil_badlani" target="_blank">Instagram 💌</a>
 </div>
 
 <script>
