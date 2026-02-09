@@ -6,119 +6,137 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root{
+  --pink:#ff4d6d;
+  --dark:#2b0f1c;
+}
+
 body{
   margin:0;
   height:100vh;
+  font-family:'Poppins',sans-serif;
+  background:
+    radial-gradient(circle at top,#ff8fa3,#7a001c 60%, #2b0f1c);
+  overflow:hidden;
   display:flex;
   justify-content:center;
   align-items:center;
-  background:radial-gradient(circle,#ff2e63,#8b0000);
-  font-family:'Poppins',sans-serif;
-  overflow:hidden;
-}
-
-.card{
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(15px);
-  padding:50px;
-  border-radius:30px;
-  text-align:center;
-  box-shadow:0 30px 80px rgba(0,0,0,.4);
   color:#fff;
-  z-index:2;
 }
 
-h1{font-size:2.6rem;margin-bottom:40px}
+/* Floating hearts */
+.hearts{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+}
+.heart{
+  position:absolute;
+  font-size:18px;
+  opacity:.7;
+  animation:floatUp linear infinite;
+}
+@keyframes floatUp{
+  from{transform:translateY(110vh) scale(.8)}
+  to{transform:translateY(-10vh) scale(1.4)}
+}
 
-.buttons{display:flex;gap:40px;justify-content:center}
+/* Card */
+.card{
+  z-index:2;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(18px);
+  padding:60px;
+  border-radius:35px;
+  text-align:center;
+  box-shadow:0 40px 100px rgba(0,0,0,.45);
+}
+
+h1{
+  font-size:2.7rem;
+  margin-bottom:45px;
+}
+
+.buttons{
+  position:relative;
+  height:100px;
+}
 
 button{
   border:none;
   border-radius:60px;
-  padding:18px 45px;
+  padding:18px 44px;
   font-size:1.4rem;
   cursor:pointer;
+  position:absolute;
 }
 
 #yes{
-  background:#ffccd5;
+  left:50%;
+  transform:translateX(-120%);
+  background:#ffd6dc;
   animation:heartbeat 1.2s infinite;
 }
-
 @keyframes heartbeat{
-  0%{transform:scale(1)}
-  25%{transform:scale(1.15)}
-  50%{transform:scale(1)}
-  75%{transform:scale(1.2)}
-  100%{transform:scale(1)}
+  0%{transform:translateX(-120%) scale(1)}
+  30%{transform:translateX(-120%) scale(1.18)}
+  60%{transform:translateX(-120%) scale(1)}
+  100%{transform:translateX(-120%) scale(1.22)}
 }
 
 #no{
+  left:50%;
+  transform:translateX(20%);
   background:#eee;
-  position:relative;
 }
 
-.confetti{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  overflow:hidden;
-}
-
-.heart{
-  position:absolute;
-  font-size:24px;
-  animation:fall 4s linear infinite;
-}
-
-@keyframes fall{
-  from{transform:translateY(-10vh)}
-  to{transform:translateY(110vh)}
-}
+audio{display:none}
 </style>
 </head>
 
 <body>
 
+<div class="hearts" id="hearts"></div>
+
 <div class="card">
   <h1>Will you be my Valentine? ❤️</h1>
   <div class="buttons">
-    <button id="yes" onclick="acceptLove()">YES 💖</button>
-    <button id="no" onmouseover="runAway()">NO 🙈</button>
+    <button id="yes" onclick="accept()">YES 💖</button>
+    <button id="no" onmouseover="playAround()">NO 🙈</button>
   </div>
 </div>
 
-<div class="confetti" id="confetti"></div>
-
 <audio id="music" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5c8c8dfd59.mp3">
+  <source src="https://cdn.pixabay.com/audio/2023/03/28/audio_8a10c2c4c5.mp3">
 </audio>
 
 <script>
-function runAway(){
-  const btn = document.getElementById("no");
-  btn.style.position="absolute";
-  btn.style.left=Math.random()*(window.innerWidth-100)+"px";
-  btn.style.top=Math.random()*(window.innerHeight-100)+"px";
+/* Floating hearts generator */
+const heartBox=document.getElementById("hearts");
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.textContent="❤️";
+  h.style.left=Math.random()*100+"%";
+  h.style.animationDuration=6+Math.random()*6+"s";
+  heartBox.appendChild(h);
+  setTimeout(()=>h.remove(),12000);
+},350);
+
+/* NO button plays around but stays visible */
+function playAround(){
+  const btn=document.getElementById("no");
+  const maxX=window.innerWidth-140;
+  const maxY=window.innerHeight-140;
+  btn.style.left=Math.random()*maxX+"px";
+  btn.style.top=Math.random()*maxY+"px";
 }
 
-function acceptLove(){
+/* YES action */
+function accept(){
   document.getElementById("music").play();
-  launchConfetti();
-  setTimeout(()=>window.location.href="date.html",2500);
-}
-
-function launchConfetti(){
-  const box=document.getElementById("confetti");
-  for(let i=0;i<40;i++){
-    const h=document.createElement("div");
-    h.className="heart";
-    h.innerHTML="❤️";
-    h.style.left=Math.random()*100+"%";
-    h.style.animationDuration=2+Math.random()*3+"s";
-    box.appendChild(h);
-    setTimeout(()=>h.remove(),4000);
-  }
+  setTimeout(()=>location.href="date.html",2000);
 }
 </script>
 
